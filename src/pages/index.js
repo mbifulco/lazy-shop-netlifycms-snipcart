@@ -47,7 +47,7 @@ const IndexPage = ({
   },
 }) => (
   <Layout>
-  {console.log(postEdges)}
+      {console.log(postEdges)}
     <Wrapper>
       <Hero>
         <h1>Hi.</h1>
@@ -75,6 +75,7 @@ const IndexPage = ({
             slug={post.node.childMdx.frontmatter.id}
             categories={post.node.childMdx.frontmatter.categories}
             key={post.node.childMdx.frontmatter.id}
+            image={post.node.childMdx.frontmatter.images[0].childImageSharp.fluid}
           />
         ))}
       </Content>
@@ -105,7 +106,13 @@ export const IndexQuery = graphql`
             frontmatter {
               id
               title
-              images
+              images {
+                childImageSharp {
+                  fluid {
+                    ...GatsbyImageSharpFluid
+                  }
+                }
+              }
               description
               pricing {
                 taxed

@@ -74,8 +74,8 @@ const Post = ({ pageContext: { slug, prev, next }, data: { mdx: postNode } }) =>
               ))}
           </Subline>
           <PostContent>
-              {post.images.map(image => (
-              <img src={image}/>
+            {post.images.map(image => (
+              <Img fluid={image.childImageSharp.fluid} />
             ))}
             <MDXRenderer>{postNode.code.body}</MDXRenderer>
           </PostContent>
@@ -114,7 +114,13 @@ export const postQuery = graphql`
       excerpt
       frontmatter {
         title
-        images
+        images {
+          childImageSharp {
+            fluid {
+              ...GatsbyImageSharpFluid
+            }
+          }
+        }
       }
     }
   }

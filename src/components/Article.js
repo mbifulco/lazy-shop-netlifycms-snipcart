@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Link } from 'gatsby'
 import kebabCase from 'lodash/kebabCase'
-
+import Img from 'gatsby-image'
 import Subline from './Subline'
 
 const Post = styled.article`
@@ -45,7 +45,7 @@ const Excerpt = styled.p`
   margin-bottom: 1rem;
 `
 
-const Article = ({ title, date, excerpt, slug, timeToRead, categories }) => {
+const Article = ({ title, date, excerpt, slug, timeToRead, categories, image }) => {
   const firstChar = title.charAt(0)
 
   return (
@@ -55,6 +55,9 @@ const Article = ({ title, date, excerpt, slug, timeToRead, categories }) => {
         <Link to={slug}>{title}</Link>
       </Title>
       <Subline>
+      <Link to={slug}>
+        <Img fluid={image} />
+        </Link>
         {date} &mdash; {timeToRead} Min Read &mdash; In{' '}
         {/* {categories.map((cat, i) => (
           <React.Fragment key={cat}>

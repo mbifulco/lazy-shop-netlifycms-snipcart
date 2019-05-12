@@ -15,7 +15,6 @@ exports.onCreateNode = ({ node, actions }) => {
 
 
     fmImagesToRelative(node)
-    node.frontmatter && console.log(node)
 //     const { frontmatter } = node
 //     if (frontmatter) {
 //       const { images } = frontmatter

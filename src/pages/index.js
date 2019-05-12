@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Link, graphql } from 'gatsby'
 import styled from 'styled-components'
 
-import { Layout, Article, Wrapper, Button, SectionTitle } from '../components'
+import { Layout, Article, Wrapper, Button, SectionTitle, Product } from '../components'
 
 const Content = styled.div`
   grid-column: 2;
@@ -47,7 +47,7 @@ const IndexPage = ({
   },
 }) => (
   <Layout>
-      {console.log(postEdges)}
+    {console.log(postEdges)}
     <Wrapper>
       <Hero>
         <h1>Hi.</h1>
@@ -67,14 +67,10 @@ const IndexPage = ({
       <Content>
         <SectionTitle>Latest stories</SectionTitle>
         {postEdges.map(post => (
-          <Article
+          <Product
             title={post.node.childMdx.frontmatter.title}
-            date={post.node.childMdx.frontmatter.date}
-            excerpt={post.node.childMdx.excerpt}
-            timeToRead={post.node.timeToRead}
-            slug={post.node.childMdx.frontmatter.id}
-            categories={post.node.childMdx.frontmatter.categories}
-            key={post.node.childMdx.frontmatter.id}
+            id={post.node.childMdx.frontmatter.id}
+            price={post.node.childMdx.frontmatter.pricing.price}
             image={post.node.childMdx.frontmatter.images[0].childImageSharp.fluid}
           />
         ))}
@@ -116,6 +112,7 @@ export const IndexQuery = graphql`
               description
               pricing {
                 taxed
+                price
               }
               tags
             }

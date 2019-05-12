@@ -43,10 +43,11 @@ const Hero = styled.div`
 
 const IndexPage = ({
   data: {
-    allMdx: { edges: postEdges },
+    allFile: { edges: postEdges },
   },
 }) => (
   <Layout>
+  {console.log(postEdges)}
     <Wrapper>
       <Hero>
         <h1>Hi.</h1>
@@ -67,13 +68,13 @@ const IndexPage = ({
         <SectionTitle>Latest stories</SectionTitle>
         {postEdges.map(post => (
           <Article
-            title={post.node.frontmatter.title}
-            date={post.node.frontmatter.date}
-            excerpt={post.node.excerpt}
+            title={post.node.childMdx.frontmatter.title}
+            date={post.node.childMdx.frontmatter.date}
+            excerpt={post.node.childMdx.excerpt}
             timeToRead={post.node.timeToRead}
-            slug={post.node.fields.slug}
-            categories={post.node.frontmatter.categories}
-            key={post.node.fields.slug}
+            slug={post.node.childMdx.frontmatter.id}
+            categories={post.node.childMdx.frontmatter.categories}
+            key={post.node.childMdx.frontmatter.id}
           />
         ))}
       </Content>
@@ -93,19 +94,25 @@ IndexPage.propTypes = {
 
 export const IndexQuery = graphql`
   query IndexQuery {
-    allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
+    allFile(filter: { sourceInstanceName: { eq: "products" } }) {
       edges {
         node {
-          fields {
-            slug
+          extension
+          dir
+          modifiedTime
+          childMdx {
+            id
+            frontmatter {
+              id
+              title
+              images
+              description
+              pricing {
+                taxed
+              }
+              tags
+            }
           }
-          frontmatter {
-            title
-            date(formatString: "MM/DD/YYYY")
-            categories
-          }
-          excerpt(pruneLength: 200)
-          timeToRead
         }
       }
     }

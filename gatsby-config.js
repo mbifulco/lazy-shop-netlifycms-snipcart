@@ -8,14 +8,18 @@ module.exports = {
     siteUrl: config.siteUrl + pathPrefix,
   },
   plugins: [
-    'gatsby-plugin-react-helmet',
-    'gatsby-plugin-styled-components',
-    'gatsby-plugin-sharp',
     {
       resolve: 'gatsby-source-filesystem',
       options: {
-        name: 'post',
-        path: `${__dirname}/blog`,
+        name: 'products',
+        path: `${__dirname}/products`,
+      },
+    },
+    {
+      resolve: 'gatsby-source-filesystem',
+      options: {
+        name: 'images',
+        path: `${__dirname}/images`,
       },
     },
     {
@@ -24,39 +28,92 @@ module.exports = {
         trackingId: config.googleAnalyticsID,
       },
     },
+    
+    'gatsby-plugin-sharp',
+    `gatsby-transformer-sharp`,
     {
       resolve: 'gatsby-mdx',
       options: {
-        gatsbyRemarkPlugins: [
+        extensions: ['.mdx', '.md'],
+        plugins: [
           {
-            resolve: 'gatsby-remark-external-links',
+            resolve: 'gatsby-remark-relative-images',
             options: {
-              target: '_blank',
-              rel: 'nofollow noopener noreferrer',
+              name: 'uploads',
             },
           },
           {
             resolve: 'gatsby-remark-images',
             options: {
-              maxWidth: 830,
-              quality: 90,
-              withWebp: true,
-              linkImagesToOriginal: false,
+              // It's important to specify the maxWidth (in pixels) of
+              // the content container as this plugin uses this as the
+              // base for generating different widths of each image.
+              maxWidth: 2048,
             },
           },
-          // TODO: Replace with "mdx-component-autolink-headers"
           {
-            resolve: 'gatsby-remark-autolink-headers',
+            resolve: 'gatsby-remark-copy-linked-files',
             options: {
-              maintainCase: false,
+              destinationDir: 'static',
+            },
+          },
+        ],
+        gatsbyRemarkPlugins: [
+          {
+            resolve: 'gatsby-remark-relative-images',
+            options: {
+              name: 'images',
+            },
+          },
+          {
+            resolve: 'gatsby-remark-images',
+            options: {
+              // It's important to specify the maxWidth (in pixels) of
+              // the content container as this plugin uses this as the
+              // base for generating different widths of each image.
+              maxWidth: 2048,
+            },
+          },
+          {
+            resolve: 'gatsby-remark-copy-linked-files',
+            options: {
+              destinationDir: 'images',
             },
           },
         ],
       },
     },
+    'gatsby-plugin-react-helmet',
+    'gatsby-plugin-styled-components',
+    // {
+    //   resolve: 'gatsby-source-filesystem',
+    //   options: {
+    //     name: 'post',
+    //     path: `${__dirname}/blog`,
+    //   },
+    // },
+    
+    
+    
     'gatsby-plugin-catch-links',
     'gatsby-plugin-sitemap',
     'gatsby-plugin-lodash',
+    {
+      resolve: 'gatsby-transformer-remark',
+      options: {
+        plugins: [
+          {
+            resolve: 'gatsby-remark-design-system',
+            options: {
+              // Class prefix for all elements of the design system specimens
+              // This prefix also needs to be set on wrapper components in your Gatsby project
+              // Default value is 'grds' - so if you want you can leave out this option entirely
+              classPrefix: 'grds',
+            }
+          }
+        ],
+      },
+    },
     {
       resolve: 'gatsby-plugin-manifest',
       options: {

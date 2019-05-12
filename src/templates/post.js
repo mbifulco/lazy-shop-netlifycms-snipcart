@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import kebabCase from 'lodash/kebabCase'
 import MDXRenderer from 'gatsby-mdx/mdx-renderer'
 
+import Img from 'gatsby-image'
 import { Layout, Wrapper, Header, Subline, SEO, PrevNext } from '../components'
 import config from '../../config'
 
@@ -56,7 +57,7 @@ const Post = ({ pageContext: { slug, prev, next }, data: { mdx: postNode } }) =>
   return (
     <Layout customSEO>
       <Wrapper>
-        <SEO postPath={slug} postNode={postNode} article />
+        {/* <SEO postPath={slug} postNode={postNode} article /> */}
         <Header>
           <Link to="/">{config.siteTitle}</Link>
         </Header>
@@ -64,14 +65,18 @@ const Post = ({ pageContext: { slug, prev, next }, data: { mdx: postNode } }) =>
           <Title>{post.title}</Title>
           <Subline>
             {post.date} &mdash; {postNode.timeToRead} Min Read &mdash; In{' '}
-            {post.categories.map((cat, i) => (
-              <React.Fragment key={cat}>
-                {!!i && ', '}
-                <Link to={`/categories/${kebabCase(cat)}`}>{cat}</Link>
-              </React.Fragment>
-            ))}
+            {post.categories &&
+              post.categories.map((cat, i) => (
+                <React.Fragment key={cat}>
+                  {!!i && ', '}
+                  <Link to={`/categories/${kebabCase(cat)}`}>{cat}</Link>
+                </React.Fragment>
+              ))}
           </Subline>
           <PostContent>
+              {post.images.map(image => (
+              <img src={image}/>
+            ))}
             <MDXRenderer>{postNode.code.body}</MDXRenderer>
           </PostContent>
           <PrevNext prev={prev} next={next} />
@@ -85,7 +90,6 @@ export default Post
 
 Post.propTypes = {
   pageContext: PropTypes.shape({
-    slug: PropTypes.string.isRequired,
     next: PropTypes.object,
     prev: PropTypes.object,
   }),
@@ -102,23 +106,15 @@ Post.defaultProps = {
 }
 
 export const postQuery = graphql`
-  query postBySlug($slug: String!) {
-    mdx(fields: { slug: { eq: $slug } }) {
+  query postBySlug($id: String!) {
+    mdx(frontmatter: { id: { eq: $id } }) {
       code {
         body
       }
       excerpt
       frontmatter {
         title
-        date(formatString: "MM/DD/YYYY")
-        categories
-      }
-      timeToRead
-      parent {
-        ... on File {
-          mtime
-          birthtime
-        }
+        images
       }
     }
   }

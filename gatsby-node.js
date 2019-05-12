@@ -1,5 +1,6 @@
 const _ = require('lodash')
-
+const { fmImagesToRelative } = require('gatsby-remark-relative-images')
+const path = require('path')
 // graphql function doesn't throw an error so we have to check to check for the result.errors to throw manually
 const wrapper = promise =>
   promise.then(result => {
@@ -12,25 +13,24 @@ const wrapper = promise =>
 exports.onCreateNode = ({ node, actions }) => {
   const { createNodeField } = actions
 
-  let slug
 
-  if (node.internal.type === 'Mdx') {
-    if (
-      Object.prototype.hasOwnProperty.call(node, 'frontmatter') &&
-      Object.prototype.hasOwnProperty.call(node.frontmatter, 'slug')
-    ) {
-      slug = `/${_.kebabCase(node.frontmatter.slug)}`
-    }
-    if (
-      Object.prototype.hasOwnProperty.call(node, 'frontmatter') &&
-      Object.prototype.hasOwnProperty.call(node.frontmatter, 'title')
-    ) {
-      slug = `/${_.kebabCase(node.frontmatter.title)}`
-    }
-    createNodeField({ node, name: 'slug', value: slug })
-  }
+    fmImagesToRelative(node)
+    node.frontmatter && console.log(node)
+//     const { frontmatter } = node
+//     if (frontmatter) {
+//       const { images } = frontmatter
+//       if (images) {
+//         images.forEach(
+//           (image, i) => {
+//             (frontmatter.images[i] = path.relative(
+//               path.dirname(node.fileAbsolutePath),
+//               path.join(__dirname, image)
+//             ))}
+//         )
+//       }
+  
+// }
 }
-
 exports.createPages = async ({ graphql, actions }) => {
   const { createPage } = actions
 
@@ -40,15 +40,13 @@ exports.createPages = async ({ graphql, actions }) => {
   const result = await wrapper(
     graphql(`
       {
-        allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
+        allMdx {
           edges {
             node {
-              fields {
-                slug
-              }
               frontmatter {
+                id
                 title
-                categories
+                tags
               }
             }
           }
@@ -62,37 +60,18 @@ exports.createPages = async ({ graphql, actions }) => {
   posts.forEach((edge, index) => {
     const next = index === 0 ? null : posts[index - 1].node
     const prev = index === posts.length - 1 ? null : posts[index + 1].node
+    
 
     createPage({
-      path: edge.node.fields.slug,
+      path: edge.node.frontmatter.id,
       component: postTemplate,
       context: {
-        slug: edge.node.fields.slug,
+        id: edge.node.frontmatter.id,
         prev,
         next,
       },
     })
   })
 
-  const categorySet = new Set()
 
-  _.each(posts, edge => {
-    if (_.get(edge, 'node.frontmatter.categories')) {
-      edge.node.frontmatter.categories.forEach(cat => {
-        categorySet.add(cat)
-      })
-    }
-  })
-
-  const categories = Array.from(categorySet)
-
-  categories.forEach(category => {
-    createPage({
-      path: `/categories/${_.kebabCase(category)}`,
-      component: categoryTemplate,
-      context: {
-        category,
-      },
-    })
-  })
 }

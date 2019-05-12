@@ -5,7 +5,7 @@ import Img from 'gatsby-image'
 import { Link } from 'gatsby'
 
 const Product = ({ title, image, price, id }) => (
-  <Card width="50%">
+  <Card>
     <Link to={`/${id}`}>
       <Img fluid={image} />
     </Link>

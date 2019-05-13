@@ -17,8 +17,8 @@ const Product = ({ title, image, price, id }) => (
         className="snipcart-add-item"
         data-item-id={id}
         data-item-name={title}
-        data-item-price={price}
-        data-item-url="www.lazyshopdemo.netlify.com"
+        data-item-price={price.toString()}
+        data-item-url="/"
         data-item-description="todo"
       >
         Buy Now {price}

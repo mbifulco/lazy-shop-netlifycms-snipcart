@@ -18,7 +18,7 @@ const Product = ({ title, image, price, id }) => (
         data-item-id={id}
         data-item-name={title}
         data-item-price={price}
-        data-item-url="/"
+        data-item-url="www.lazyshopdemo.netlify.com"
         data-item-description="todo"
       >
         Buy Now {price}

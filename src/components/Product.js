@@ -18,10 +18,10 @@ const Product = ({ title, image, price, id }) => (
         data-item-id={id}
         data-item-name={title}
         data-item-price={price}
-        data-item-url="localhost:8000"
+        data-item-url="/"
         data-item-description="todo"
       >
-        Buy Now
+        Buy Now {price}
       </button>
     </CardBlock>
   </Card>

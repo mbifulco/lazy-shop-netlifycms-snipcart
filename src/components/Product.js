@@ -13,7 +13,16 @@ const Product = ({ title, image, price, id }) => (
       <Link to={`/${id}`}>{title}</Link>
     </CardHeader>
     <CardBlock>
-      <Button color="success">{price || '$99.99'}</Button>
+      <button
+        className="snipcart-add-item"
+        data-item-id={id}
+        data-item-name={title}
+        data-item-price={price}
+        data-item-url="localhost:8000"
+        data-item-description="todo"
+      >
+        Buy Now
+      </button>
     </CardBlock>
   </Card>
 )
